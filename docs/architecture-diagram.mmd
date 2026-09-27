@@ -1,0 +1,14 @@
+graph LR
+ subgraph Internet["Internet (External Trust Boundary)"]
+ User[User Web Browser]
+ end
+ subgraph AppNet["Application Network (Internal Trust Boundary)"]
+ DVWA[Docker: DVWA Web App - PHP/Apache - Port 80]
+ end
+ subgraph DBNet["Database Network (Restricted Trust Boundary)"]
+ DB[(Docker: MariaDB - Port 3306)]
+  end
+ User -- "1. HTTP Request" --> DVWA
+ DVWA -- "2. HTTP Response" --> User
+ DVWA -- "3. SQL Query" --> DB
+ DB -- "4. Query Result" --> DVWA
