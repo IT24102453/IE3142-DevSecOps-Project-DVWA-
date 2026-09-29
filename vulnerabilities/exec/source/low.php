@@ -1,21 +1,27 @@
 <?php
 
-if( isset( $_POST[ 'Submit' ]  ) ) {
-	// Get input
-	$target = $_REQUEST[ 'ip' ];
+if( isset( $_POST[ 'Submit' ] ) ) {
 
-	// Determine OS and execute the ping command.
-	if( stristr( php_uname( 's' ), 'Windows NT' ) ) {
-		// Windows
-		$cmd = shell_exec( 'ping  ' . $target );
-	}
-	else {
-		// *nix
-		$cmd = shell_exec( 'ping  -c 4 ' . $target );
-	}
+    $target = trim( $_REQUEST[ 'ip' ] );
 
-	// Feedback for the end user
-	$html .= "<pre>{$cmd}</pre>";
+    $pattern = '/^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/';
+
+    if ( !preg_match( $pattern, $target ) ) {
+        echo "<pre>ERROR: Invalid IP address format.</pre>";
+    }
+    else {
+
+        $safe_target = escapeshellarg( $target );
+
+        if( stristr( php_uname( 's' ), 'Windows NT' ) ) {
+            $cmd = shell_exec( 'ping ' . $safe_target );
+        }
+        else {
+            $cmd = shell_exec( 'ping -c 4 ' . $safe_target );
+        }
+
+        echo "<pre>{$cmd}</pre>";
+    }
 }
 
 ?>
